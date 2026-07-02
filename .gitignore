@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+chroma_db/
+checkpoints.sqlite
+bot_threads.sqlite
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm

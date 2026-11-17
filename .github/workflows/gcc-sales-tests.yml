@@ -1,0 +1,24 @@
+name: GCC Sales Pilot Tests
+
+on:
+  push:
+    paths:
+      - "gcc_sales/**"
+      - ".github/workflows/gcc-sales-tests.yml"
+  pull_request:
+    paths:
+      - "gcc_sales/**"
+      - ".github/workflows/gcc-sales-tests.yml"
+
+jobs:
+  offline-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Parse sources
+        run: python -m compileall -q gcc_sales
+      - name: Consent, opt-out and booking tests
+        run: python -m unittest discover -s gcc_sales/tests -v

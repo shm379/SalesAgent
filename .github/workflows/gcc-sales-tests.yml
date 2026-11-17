@@ -18,7 +18,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Install API test dependencies
+        run: python -m pip install -r gcc_sales/requirements.txt
       - name: Parse sources
         run: python -m compileall -q gcc_sales
-      - name: Consent, opt-out and booking tests
+      - name: Consent, opt-out, booking and API tests
         run: python -m unittest discover -s gcc_sales/tests -v

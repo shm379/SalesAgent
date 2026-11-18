@@ -83,3 +83,20 @@ Calling consent remains exclusively enforced by the GCC SalesStore.
 
 The CRM service must be configured to receive intake and have the same
 NABUGATE_SECRET. A source_url is not invented when the source is unknown.
+
+## Existing NabuCRM PBX events bridge
+
+`gcc_sales/pbx_bridge.py` now knows NabuCRM's existing
+`POST /api/crm/pbx/{key}` webhook format. It signs a started/answered/ended
+event with HMAC-SHA256 over `timestamp.raw-body` using the business PBX
+connection secret and can deliver events over HTTPS. On `ended`, an approved
+recording URL and duration can be attached, so NabuCRM can process the call
+with its existing transcription and analysis job if its PBX connection and
+rep routing are configured. No PBX secret or webhook key is committed.
+
+**Scope:** This is the event-reporting half of the integration only.
+Nothing originates a telephone call. The call worker (with an authorized
+Asterisk/SIP trunk), realtime bidirectional AI audio, recording consent,
+call rate limits and telephony lifecycle hooks must be deployed/tested before
+live dialing. Call data must be emitted from real PBX events, not a simulated
+call; see `test_pbx_bridge.py`.

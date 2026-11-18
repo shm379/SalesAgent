@@ -62,3 +62,24 @@ regulatory clearance.
 
 Official Oman TRA rules (August 2026):
 https://tra.gov.om/legal-framework/tifarsei1h1kpc0kprkq6qf9
+
+## NabuCRM sync adapter (new)
+
+The service now supports the **existing** NabuCRM signed intake contract, with
+one stable idempotent event per lead and a local retry ledger. NabuCRM must
+have the `sales-agent` identifier in `config/gate.php`; this is added in a
+separate NabuCRM draft PR. Credentials and deployment are not included.
+
+    export NABUGATE_SECRET='same-secret-as-NabuCRM'
+    python -m gcc_sales.crm_sync --dry-run
+    python -m gcc_sales.crm_sync --limit 50
+
+Run the delivery command from a scheduled service in production. It signs
+each attempt with a fresh timestamp, retries transient failures and does
+not retry bad signatures. **This sync creates a CRM intake lead only**; it
+does not automatically update NabuCRM's pipeline stage, place calls, book
+a real external calendar event or claim marketing consent for email/SMS.
+Calling consent remains exclusively enforced by the GCC SalesStore.
+
+The CRM service must be configured to receive intake and have the same
+NABUGATE_SECRET. A source_url is not invented when the source is unknown.
